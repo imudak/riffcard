@@ -1,0 +1,12 @@
+# MUSUBI Project Configuration
+name: riffcard
+description: 歌のフレーズを繰り返し練習する音楽版英単語帳PWA
+locale: ja
+version: "0.1.0"
+created: 2026-02-19
+
+# Technology Stack
+tech_stack:
+  approach: single
+  languages:
+    - javascript
