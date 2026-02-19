@@ -1,572 +1,234 @@
-# Product Context
+# Product Context — RiffCard
 
-**Project**: riffcard
-**Last Updated**: 2026-02-19
-**Version**: 1.0
-
----
-
-## Product Vision
-
-**Vision Statement**: {{VISION_STATEMENT}}
-
-> [1-2 paragraph description of what this product aims to achieve and why it exists]
-
-**Mission**: {{MISSION_STATEMENT}}
-
-> [How the product achieves its vision]
+**プロジェクト**: riffcard
+**最終更新**: 2026-02-20
+**バージョン**: 1.1
 
 ---
 
-## Product Overview
+## プロダクトビジョン
 
-### What is riffcard?
+**ビジョン**: 「歌いたいフレーズを、何度でも練習できる場所」
 
-歌のフレーズを繰り返し練習する音楽版英単語帳PWA
+歌が上手くなりたいすべての人に、ボイストレーナーなしで自主練できる環境を届ける。
+単語帳アプリが語学学習を変えたように、RiffCardは歌の練習を変える。
 
-> [2-3 paragraphs explaining the product, its purpose, and core value proposition]
-
-### Problem Statement
-
-**Problem**: {{PROBLEM_STATEMENT}}
-
-> [What problem does this product solve? What pain points does it address?]
-
-### Solution
-
-**Solution**: {{SOLUTION_STATEMENT}}
-
-> [How does this product solve the problem? What makes it unique?]
+**ミッション**: フレーズ単位の繰り返し練習を、スコアで上達が見えるシンプルなPWAとして実現する。
 
 ---
 
-## Target Users
+## プロダクト概要
 
-### Primary Users
+### RiffCardとは？
 
-#### User Persona 1: {{PERSONA_1_NAME}}
+歌のフレーズを繰り返し練習する「音楽版英単語帳」PWA。
 
-**Demographics**:
+英単語帳アプリが「単語→意味→テスト」の繰り返しで学習効率を高めるように、
+RiffCardは「お手本録音→練習録音→ピッチスコア」の繰り返しで歌の上達を実現する。
 
-- **Role**: {{ROLE}}
-- **Organization Size**: {{ORG_SIZE}}
-- **Technical Level**: {{TECH_LEVEL}}
+### 解決する課題
 
-**Goals**:
+- **課題**: カラオケでサビの高音が出ない、特定フレーズを集中練習したいが方法がない
+- **現状の問題**: ボイストレーナーに頼ると週1回・高コスト。カラオケで全曲通しでは非効率
+- **RiffCardの解法**: フレーズ単位で切り出し、お手本と比較しながら何度でも練習できる
 
-- [Goal 1]
-- [Goal 2]
-- [Goal 3]
+### ユニークな価値
 
-**Pain Points**:
-
-- [Pain point 1]
-- [Pain point 2]
-- [Pain point 3]
-
-**Use Cases**:
-
-- [Use case 1]
-- [Use case 2]
-- [Use case 3]
+1. **フレーズ単位**: 曲全体ではなく「サビの高音だけ」を集中練習できる
+2. **ピッチスコア**: 感覚的な「上手くなった気」ではなく数値で上達を確認できる
+3. **PWA**: インストール不要、スマホでもデスクトップでもオフラインで動く
 
 ---
 
-#### User Persona 2: {{PERSONA_2_NAME}}
+## ターゲットユーザー
 
-**Demographics**:
+### プライマリユーザー: カラオケ自主練ユーザー
 
-- **Role**: {{ROLE}}
-- **Organization Size**: {{ORG_SIZE}}
-- **Technical Level**: {{TECH_LEVEL}}
+**プロファイル**:
+- 年齢: 20〜40代
+- カラオケが好きだが特定のフレーズ（サビ、高音部分）が苦手
+- ボーカルレッスンに通うほどではないが真剣に上手くなりたい
+- スマートフォンに慣れており、アプリのインストールより即使えるものを好む
 
-**Goals**:
+**ゴール**:
+- 苦手フレーズを短期間で克服したい
+- 練習の成果を客観的に確認したい
+- 隙間時間（通勤中、就寝前）に練習したい
 
-- [Goal 1]
-- [Goal 2]
-
-**Pain Points**:
-
-- [Pain point 1]
-- [Pain point 2]
-
-**Use Cases**:
-
-- [Use case 1]
-- [Use case 2]
+**ペインポイント**:
+- カラオケで全曲通すと練習効率が悪い
+- 自分が上手くなっているかどうかわからない
+- ボイトレに通う時間・お金がない
 
 ---
 
-### Secondary Users
+### セカンダリユーザー: ボーカルレッスン受講者
 
-- **{{SECONDARY_USER_1}}**: [Description and role]
-- **{{SECONDARY_USER_2}}**: [Description and role]
-
----
-
-## Market & Business Context
-
-### Market Opportunity
-
-**Market Size**: {{MARKET_SIZE}}
-
-**Target Market**: {{TARGET_MARKET}}
-
-> [Description of the market opportunity, competitive landscape, and positioning]
-
-### Business Model
-
-**Revenue Model**: {{REVENUE_MODEL}}
-
-> Examples: SaaS subscription, One-time purchase, Freemium, Usage-based
-
-**Pricing Tiers** (if applicable):
-
-- **Free Tier**: [Features, limitations]
-- **Pro Tier**: ${{PRICE}}/month - [Features]
-- **Enterprise Tier**: Custom pricing - [Features]
-
-### Competitive Landscape
-
-| Competitor       | Strengths   | Weaknesses   | Our Differentiation   |
-| ---------------- | ----------- | ------------ | --------------------- |
-| {{COMPETITOR_1}} | [Strengths] | [Weaknesses] | [How we're different] |
-| {{COMPETITOR_2}} | [Strengths] | [Weaknesses] | [How we're different] |
+- レッスンで習ったフレーズを自宅で反復練習したい
+- 先生のお手本を録音して練習素材として使いたい
 
 ---
 
-## Core Product Capabilities
+## 動機パターン（設計方針の根拠）
 
-### Must-Have Features (MVP)
+ユーザーのエンゲージメントを維持する動機パターンを設計に組み込む:
 
-1. **{{FEATURE_1}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P0 (Critical)
-
-2. **{{FEATURE_2}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P0 (Critical)
-
-3. **{{FEATURE_3}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P0 (Critical)
-
-### High-Priority Features (Post-MVP)
-
-4. **{{FEATURE_4}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P1 (High)
-
-5. **{{FEATURE_5}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P1 (High)
-
-### Future Features (Roadmap)
-
-6. **{{FEATURE_6}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P2 (Medium)
-
-7. **{{FEATURE_7}}**
-   - **Description**: [What it does]
-   - **User Value**: [Why users need it]
-   - **Priority**: P3 (Low)
+| 優先度 | 動機パターン | RiffCardでの実装 |
+|--------|------------|----------------|
+| **P1** | ストリーク | 毎日の練習記録・連続日数表示（Phase 3） |
+| **P3** | 前払い進捗効果 | 初回で1フレーズ録音完了 →「もう始まってる」感 |
+| **P8** | フロー状態 | フレーズ選択→即録音開始、選択肢で迷わせない |
+| **P13** | 作品化欲求 | スコア推移グラフ = 成長の可視化（Phase 3） |
 
 ---
 
-## Product Principles
+## コア機能（フェーズ別）
 
-### Design Principles
+### Phase 1 MVP: 「録音→スコア」ループ（P0）
 
-1. **{{PRINCIPLE_1}}**
-   - [Description of what this means for product decisions]
+1. **フレーズ管理**
+   - Note（ノートブック）→ Phrase（フレーズ）→ Take（練習テイク）の3層モデル
+   - IndexedDBによる完全ローカル保存
 
-2. **{{PRINCIPLE_2}}**
-   - [Description]
+2. **お手本録音**
+   - マイクで自分のお手本フレーズを録音（MediaRecorder API / opus/webm）
+   - フレーズごとにお手本音声を保存
 
-3. **{{PRINCIPLE_3}}**
-   - [Description]
+3. **練習録音とスコア**
+   - ワンタップで練習録音開始
+   - ピッチ精度（70%）+ リズム精度（30%）でスコア計算
+   - ±50cent以内を「正確」と判定
 
-**Examples**:
+4. **PWA**
+   - インストール可能、オフライン動作
 
-- **Simplicity First**: Favor simple solutions over complex ones
-- **User Empowerment**: Give users control and flexibility
-- **Speed & Performance**: Fast response times (< 200ms)
+### Phase 2: リアルタイムフィードバック（P1）
 
-### User Experience Principles
+5. **リアルタイムピッチ表示**: 録音中にピッチ曲線をリアルタイム描画
+6. **お手本比較**: お手本と練習の波形比較グラフ
 
-1. **{{UX_PRINCIPLE_1}}**
-   - [How this guides UX decisions]
+### Phase 3: 習慣化・成長可視化（P2）
 
-2. **{{UX_PRINCIPLE_2}}**
-   - [How this guides UX decisions]
-
-**Examples**:
-
-- **Progressive Disclosure**: Show advanced features only when needed
-- **Accessibility First**: WCAG 2.1 AA compliance
-- **Mobile-First**: Design for mobile, enhance for desktop
+7. **ストリーク**: 連続練習日数の記録・表示（P1動機）
+8. **スコア推移グラフ**: フレーズごとの上達曲線（P13動機）
 
 ---
 
-## Success Metrics
+## 技術スタック概要
 
-### Key Performance Indicators (KPIs)
+| 領域 | 技術 |
+|------|------|
+| フロントエンド | React + TypeScript + Vite |
+| ピッチ検出 | Web Audio API + Pitchy.js |
+| 録音 | MediaRecorder API（opus/webm） |
+| ストレージ | IndexedDB（音声Blob含む） |
+| PWA | Service Worker + manifest.json |
+| デプロイ | Cloudflare Pages または Vercel |
 
-#### Business Metrics
-
-| Metric                              | Target            | Measurement    |
-| ----------------------------------- | ----------------- | -------------- |
-| **Monthly Active Users (MAU)**      | {{MAU_TARGET}}    | [How measured] |
-| **Monthly Recurring Revenue (MRR)** | ${{MRR_TARGET}}   | [How measured] |
-| **Customer Acquisition Cost (CAC)** | ${{CAC_TARGET}}   | [How measured] |
-| **Customer Lifetime Value (LTV)**   | ${{LTV_TARGET}}   | [How measured] |
-| **Churn Rate**                      | < {{CHURN_RATE}}% | [How measured] |
-
-#### Product Metrics
-
-| Metric                       | Target                | Measurement    |
-| ---------------------------- | --------------------- | -------------- |
-| **Daily Active Users (DAU)** | {{DAU_TARGET}}        | [How measured] |
-| **Feature Adoption Rate**    | > {{ADOPTION_RATE}}%  | [How measured] |
-| **User Retention (Day 7)**   | > {{RETENTION_RATE}}% | [How measured] |
-| **Net Promoter Score (NPS)** | > {{NPS_TARGET}}      | [How measured] |
-
-#### Technical Metrics
-
-| Metric                      | Target  | Measurement             |
-| --------------------------- | ------- | ----------------------- |
-| **API Response Time (p95)** | < 200ms | Monitoring dashboard    |
-| **Uptime**                  | 99.9%   | Status page             |
-| **Error Rate**              | < 0.1%  | Error tracking (Sentry) |
-| **Page Load Time**          | < 2s    | Web vitals              |
+詳細: `steering/tech.ja.md`
 
 ---
 
-## Product Roadmap
+## デザイン原則
 
-### Phase 1: MVP (Months 1-3)
-
-**Goal**: Launch minimum viable product
-
-**Features**:
-
-- [Feature 1]
-- [Feature 2]
-- [Feature 3]
-
-**Success Criteria**:
-
-- [Criterion 1]
-- [Criterion 2]
+1. **フロー最優先**: フレーズを選んだら即練習開始。選択肢で迷わせない（P8）
+2. **スコアで動機づけ**: 数値と可視化で「上達している」を実感させる（P13）
+3. **ローカルファースト**: データはすべてデバイス内。プライバシー重視、サーバー不要
+4. **Mobile-First**: スマホで片手操作を前提としたUI設計
 
 ---
 
-### Phase 2: Growth (Months 4-6)
+## 成功指標
 
-**Goal**: Achieve product-market fit
+### Phase 1 リリース基準
 
-**Features**:
+| 指標 | 目標 |
+|------|------|
+| フレーズ録音→スコア表示が完結 | 必須 |
+| オフライン動作 | 必須 |
+| Lighthouse Performance | ≥ 80 |
+| iOS Safari / Android Chrome で動作 | 必須 |
 
-- [Feature 4]
-- [Feature 5]
-- [Feature 6]
+### Phase 2 以降
 
-**Success Criteria**:
-
-- [Criterion 1]
-- [Criterion 2]
-
----
-
-### Phase 3: Scale (Months 7-12)
-
-**Goal**: Scale to {{USER_TARGET}} users
-
-**Features**:
-
-- [Feature 7]
-- [Feature 8]
-- [Feature 9]
-
-**Success Criteria**:
-
-- [Criterion 1]
-- [Criterion 2]
+| 指標 | 目標 |
+|------|------|
+| 1週間後リテンション | > 30% |
+| 1セッションあたりのTake数 | > 3回 |
+| ストリーク継続率（3日以上） | > 20% |
 
 ---
 
-## User Workflows
+## プロダクトロードマップ
 
-### Primary Workflow 1: {{WORKFLOW_1_NAME}}
+### Phase 1: MVP（1〜2ヶ月）
 
-**User Goal**: {{USER_GOAL}}
+**ゴール**: フレーズを録音して再生し、ピッチスコアが出る
 
-**Steps**:
+**機能**:
+- Note/Phrase/TakeのCRUD
+- お手本録音・練習録音
+- ピッチスコア計算・表示（FFT + Pitchy.js）
+- PWAオフライン対応
 
-1. User [action 1]
-2. System [response 1]
-3. User [action 2]
-4. System [response 2]
-5. User achieves [goal]
-
-**Success Criteria**:
-
-- User completes workflow in < {{TIME}} minutes
-- Success rate > {{SUCCESS_RATE}}%
+**成功基準**:
+- 1フレーズの録音→スコアまでの流れが3分以内に完結する
+- スマホで快適に操作できる
 
 ---
 
-### Primary Workflow 2: {{WORKFLOW_2_NAME}}
+### Phase 2: リアルタイム（3〜4ヶ月）
 
-**User Goal**: {{USER_GOAL}}
+**ゴール**: 録音中にリアルタイムでフィードバックを受けられる
 
-**Steps**:
-
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-**Success Criteria**:
-
-- [Criterion 1]
-- [Criterion 2]
+**機能**:
+- 録音中リアルタイムピッチグラフ
+- お手本との重ね合わせ比較
 
 ---
 
-## Business Domain
+### Phase 3: 習慣化（5〜6ヶ月）
 
-### Domain Concepts
+**ゴール**: 毎日続けたくなる
 
-Key concepts and terminology used in this domain:
-
-1. **{{CONCEPT_1}}**: [Definition and importance]
-2. **{{CONCEPT_2}}**: [Definition and importance]
-3. **{{CONCEPT_3}}**: [Definition and importance]
-
-**Example for SaaS Authentication**:
-
-- **Identity Provider (IdP)**: Service that authenticates users
-- **Single Sign-On (SSO)**: One login for multiple applications
-- **Multi-Factor Authentication (MFA)**: Additional verification step
-
-### Business Rules
-
-1. **{{RULE_1}}**
-   - [Description of business rule]
-   - **Example**: [Concrete example]
-
-2. **{{RULE_2}}**
-   - [Description]
-   - **Example**: [Example]
-
-**Example for E-commerce**:
-
-- **Inventory Reservation**: Reserved items held for 10 minutes during checkout
-- **Refund Window**: Refunds allowed within 30 days of purchase
+**機能**:
+- ストリーク（連続練習日数）
+- スコア推移グラフ（Phraseごとの成長可視化）
 
 ---
 
-## Constraints & Requirements
+## ドメイン概念
 
-### Business Constraints
-
-- **Budget**: ${{BUDGET}}
-- **Timeline**: {{TIMELINE}}
-- **Team Size**: {{TEAM_SIZE}} engineers
-- **Launch Date**: {{LAUNCH_DATE}}
-
-### Compliance Requirements
-
-- **{{COMPLIANCE_1}}**: [Description, e.g., GDPR, SOC 2, HIPAA]
-- **{{COMPLIANCE_2}}**: [Description]
-- **Data Residency**: [Requirements, e.g., EU data stays in EU]
-
-### Non-Functional Requirements
-
-- **Performance**: API response < 200ms (95th percentile)
-- **Availability**: 99.9% uptime SLA
-- **Scalability**: Support {{CONCURRENT_USERS}} concurrent users
-- **Security**: OWASP Top 10 compliance
-- **Accessibility**: WCAG 2.1 AA compliance
+| 概念 | 定義 |
+|------|------|
+| **Note** | 曲や練習テーマをまとめるノートブック（例:「Lemon - 米津玄師」） |
+| **Phrase** | 練習する歌のフレーズ（例:「サビの高音部分」） |
+| **Reference** | Phraseのお手本録音音声 |
+| **Take** | 1回の練習録音とそのスコア |
+| **Pitch Score** | ピッチ精度スコア（0-100, 70%重み） |
+| **Rhythm Score** | リズム精度スコア（0-100, 30%重み） |
+| **Total Score** | ピッチ×0.7 + リズム×0.3 の総合スコア |
+| **Streak** | 連続練習日数 |
 
 ---
 
-## Stakeholders
+## ビジネスコンテキスト
 
-### Internal Stakeholders
-
-| Role                    | Name                 | Responsibilities                  |
-| ----------------------- | -------------------- | --------------------------------- |
-| **Product Owner**       | {{PO_NAME}}          | Vision, roadmap, priorities       |
-| **Tech Lead**           | {{TECH_LEAD_NAME}}   | Architecture, technical decisions |
-| **Engineering Manager** | {{EM_NAME}}          | Team management, delivery         |
-| **QA Lead**             | {{QA_LEAD_NAME}}     | Quality assurance, testing        |
-| **Design Lead**         | {{DESIGN_LEAD_NAME}} | UX/UI design                      |
-
-### External Stakeholders
-
-| Role                        | Name        | Responsibilities            |
-| --------------------------- | ----------- | --------------------------- |
-| **Customer Advisory Board** | [Members]   | Product feedback            |
-| **Investors**               | [Names]     | Funding, strategic guidance |
-| **Partners**                | [Companies] | Integration, co-marketing   |
+- **収益モデル**: 個人プロジェクト（当面無料公開）
+- **ターゲット規模**: 個人利用〜数百ユーザー（Phase 1）
+- **コンプライアンス**: 音声データは全てローカル保存 → プライバシー問題なし
+- **チーム**: imudak（1名）+ クロウ候（AI）
 
 ---
 
-## Go-to-Market Strategy
+## 参照
 
-### Launch Strategy
-
-**Target Launch Date**: {{LAUNCH_DATE}}
-
-**Launch Phases**:
-
-1. **Private Beta** ({{START_DATE}} - {{END_DATE}})
-   - Invite-only, 50 beta users
-   - Focus: Gather feedback, fix critical bugs
-
-2. **Public Beta** ({{START_DATE}} - {{END_DATE}})
-   - Open signup
-   - Focus: Validate product-market fit
-
-3. **General Availability** ({{LAUNCH_DATE}})
-   - Full public launch
-   - Focus: Acquisition and growth
-
-### Marketing Channels
-
-- **{{CHANNEL_1}}**: [Strategy, e.g., Content marketing, SEO]
-- **{{CHANNEL_2}}**: [Strategy, e.g., Social media, Twitter/LinkedIn]
-- **{{CHANNEL_3}}**: [Strategy, e.g., Paid ads, Google/Facebook]
-- **{{CHANNEL_4}}**: [Strategy, e.g., Partnerships, integrations]
+- 要件定義: `steering/requirements.ja.md`
+- 技術詳細: `steering/tech.ja.md`
+- Flutter版知見: `steering/memories/flutter-learnings.md`
+- 憲法: `steering/rules/constitution.md`
 
 ---
 
-## Risk Assessment
-
-### Product Risks
-
-| Risk       | Probability     | Impact          | Mitigation            |
-| ---------- | --------------- | --------------- | --------------------- |
-| {{RISK_1}} | High/Medium/Low | High/Medium/Low | [Mitigation strategy] |
-| {{RISK_2}} | High/Medium/Low | High/Medium/Low | [Mitigation strategy] |
-
-**Example Risks**:
-
-- **Low adoption**: Users don't understand value → Clear onboarding, demos
-- **Performance issues**: System slow at scale → Load testing, optimization
-- **Security breach**: Data compromised → Security audit, penetration testing
-
----
-
-## Customer Support
-
-### Support Channels
-
-- **Email**: support@{{COMPANY}}.com
-- **Chat**: In-app live chat (business hours)
-- **Documentation**: docs.{{COMPANY}}.com
-- **Community**: Forum/Discord/Slack
-
-### Support SLA
-
-| Tier              | Response Time | Resolution Time |
-| ----------------- | ------------- | --------------- |
-| **Critical (P0)** | < 1 hour      | < 4 hours       |
-| **High (P1)**     | < 4 hours     | < 24 hours      |
-| **Medium (P2)**   | < 24 hours    | < 3 days        |
-| **Low (P3)**      | < 48 hours    | Best effort     |
-
----
-
-## Product Analytics
-
-### Analytics Tools
-
-- **{{ANALYTICS_TOOL_1}}**: [Purpose, e.g., Google Analytics, Mixpanel]
-- **{{ANALYTICS_TOOL_2}}**: [Purpose, e.g., Amplitude, Heap]
-
-### Events to Track
-
-| Event               | Description            | Purpose           |
-| ------------------- | ---------------------- | ----------------- |
-| `user_signup`       | New user registration  | Track acquisition |
-| `feature_used`      | User uses core feature | Track engagement  |
-| `payment_completed` | User completes payment | Track conversion  |
-| `error_occurred`    | User encounters error  | Track reliability |
-
----
-
-## Localization & Internationalization
-
-### Supported Languages
-
-- **Primary**: English (en-US)
-- **Secondary**: [Languages, e.g., Japanese (ja-JP), Spanish (es-ES)]
-
-### Localization Strategy
-
-- **UI Strings**: i18n framework (next-intl, react-i18next)
-- **Date/Time**: Locale-aware formatting
-- **Currency**: Multi-currency support
-- **Right-to-Left (RTL)**: Support for Arabic, Hebrew (if needed)
-
----
-
-## Data & Privacy
-
-### Data Collection
-
-**What data we collect**:
-
-- User account information (email, name)
-- Usage analytics (anonymized)
-- Error logs (for debugging)
-
-**What data we DON'T collect**:
-
-- [Sensitive data we avoid, e.g., passwords (only hashed), payment details (tokenized)]
-
-### Privacy Policy
-
-- **GDPR Compliance**: Right to access, delete, export data
-- **Data Retention**: [Retention period, e.g., 90 days for logs]
-- **Third-Party Sharing**: [Who we share data with, why]
-
----
-
-## Integrations
-
-### Existing Integrations
-
-| Integration       | Purpose   | Priority |
-| ----------------- | --------- | -------- |
-| {{INTEGRATION_1}} | [Purpose] | P0       |
-| {{INTEGRATION_2}} | [Purpose] | P1       |
-
-### Planned Integrations
-
-| Integration       | Purpose   | Timeline |
-| ----------------- | --------- | -------- |
-| {{INTEGRATION_3}} | [Purpose] | Q2 2025  |
-| {{INTEGRATION_4}} | [Purpose] | Q3 2025  |
-
----
-
-## Changelog
-
-### Version 1.1 (Planned)
-
-- [Future product updates]
-
----
-
-**Last Updated**: 2026-02-19
-**Maintained By**: {{MAINTAINER}}
+**最終更新**: 2026-02-20
+**担当**: imudak / クロウ候
