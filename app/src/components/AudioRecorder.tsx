@@ -17,17 +17,34 @@ export function AudioRecorder({ autoStart = false, onRecordingComplete }: AudioR
   const { state, audioBlob, error, elapsedTime, startRecording, stopRecording, getMediaStream } =
     useRecorder();
 
+  const isMediaRecorderSupported =
+    typeof window !== 'undefined' &&
+    'MediaRecorder' in window &&
+    'mediaDevices' in navigator;
+
   useEffect(() => {
-    if (autoStart && state === 'idle') {
+    if (autoStart && state === 'idle' && isMediaRecorderSupported) {
       startRecording();
     }
-  }, [autoStart, state, startRecording]);
+  }, [autoStart, state, startRecording, isMediaRecorderSupported]);
 
   useEffect(() => {
     if (state === 'stopped' && audioBlob) {
       onRecordingComplete(audioBlob);
     }
   }, [state, audioBlob, onRecordingComplete]);
+
+  if (!isMediaRecorderSupported) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-6">
+        <p className="text-red-500 font-medium">お使いのブラウザは録音に対応していません</p>
+        <div className="text-sm text-gray-600 text-center">
+          <p>Chrome、Firefox、Edge の最新版をお使いください。</p>
+          <p className="mt-1">Google Chrome を推奨します。</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

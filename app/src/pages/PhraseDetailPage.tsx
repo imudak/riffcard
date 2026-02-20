@@ -6,6 +6,8 @@ import { useTakes } from '../hooks/useTakes';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { TakeItem } from '../components/TakeItem';
 import { BackButton } from '../components/BackButton';
+import { Toast } from '../components/Toast';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 
 export function PhraseDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,16 +17,22 @@ export function PhraseDetailPage() {
   const { takes } = useTakes(id!);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showRerecordConfirm, setShowRerecordConfirm] = useState(false);
 
   const fromRecording = (location.state as { fromRecording?: boolean } | null)?.fromRecording;
 
   const handleSaveTitle = useCallback(async () => {
     if (!id || !editTitle.trim()) return;
-    const db = await openDB();
-    const repo = new PhraseRepository(db);
-    await repo.updateTitle(id, editTitle.trim());
-    setEditing(false);
-    await refreshPhrase();
+    try {
+      const db = await openDB();
+      const repo = new PhraseRepository(db);
+      await repo.updateTitle(id, editTitle.trim());
+      setEditing(false);
+      await refreshPhrase();
+    } catch {
+      setToastMessage('保存に失敗しました');
+    }
   }, [id, editTitle, refreshPhrase]);
 
   if (loading) {
@@ -99,7 +107,7 @@ export function PhraseDetailPage() {
               autoPlay={!!fromRecording}
             />
             <button
-              onClick={() => navigate(`/phrases/${id}/reference`)}
+              onClick={() => phrase.referenceAudioBlob ? setShowRerecordConfirm(true) : navigate(`/phrases/${id}/reference`)}
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100"
             >
               再録音
@@ -136,6 +144,19 @@ export function PhraseDetailPage() {
           )}
         </section>
       </main>
+      <ConfirmDialog
+        open={showRerecordConfirm}
+        message="お手本を上書きしますか？元の録音は戻せません。"
+        confirmLabel="再録音する"
+        onConfirm={() => {
+          setShowRerecordConfirm(false);
+          navigate(`/phrases/${id}/reference`);
+        }}
+        onCancel={() => setShowRerecordConfirm(false)}
+      />
+      {toastMessage && (
+        <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />
+      )}
     </div>
   );
 }

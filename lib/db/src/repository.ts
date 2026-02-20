@@ -2,6 +2,17 @@ import type { IDBPDatabase } from 'idb';
 import type { RiffCardDB } from './schema';
 import type { Phrase, Take, Scores } from './types';
 
+function generateUUID(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export class PhraseRepository {
   constructor(private db: IDBPDatabase<RiffCardDB>) {}
 
@@ -9,7 +20,7 @@ export class PhraseRepository {
     const title = await this.generateDefaultTitle();
     const now = new Date();
     const phrase: Phrase = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       title,
       referenceAudioBlob: null,
       createdAt: now,
@@ -72,7 +83,7 @@ export class TakeRepository {
     scores: Scores,
   ): Promise<Take> {
     const take: Take = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       phraseId,
       audioBlob,
       pitchScore: scores.pitchScore,

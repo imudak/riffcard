@@ -5,12 +5,14 @@ import { usePhrases } from '../hooks/usePhrases';
 import { PhraseCard } from '../components/PhraseCard';
 import { EmptyState } from '../components/EmptyState';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { Toast } from '../components/Toast';
 
 export function PhraseListPage() {
   const { phrases, loading, refresh } = usePhrases();
   const navigate = useNavigate();
   const [bestScores, setBestScores] = useState<Record<string, number | null>>({});
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const refreshScores = useCallback(async () => {
     if (phrases.length === 0) return;
@@ -28,19 +30,28 @@ export function PhraseListPage() {
   }, [refreshScores]);
 
   const handleCreate = async () => {
-    const db = await openDB();
-    const repo = new PhraseRepository(db);
-    const phrase = await repo.create();
-    navigate(`/phrases/${phrase.id}/reference`);
+    try {
+      const db = await openDB();
+      const repo = new PhraseRepository(db);
+      const phrase = await repo.create();
+      navigate(`/phrases/${phrase.id}/reference`);
+    } catch {
+      setToastMessage('保存に失敗しました');
+    }
   };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
-    const db = await openDB();
-    const repo = new PhraseRepository(db);
-    await repo.delete(deleteTarget.id);
-    setDeleteTarget(null);
-    await refresh();
+    try {
+      const db = await openDB();
+      const repo = new PhraseRepository(db);
+      await repo.delete(deleteTarget.id);
+      setDeleteTarget(null);
+      await refresh();
+    } catch {
+      setDeleteTarget(null);
+      setToastMessage('削除に失敗しました');
+    }
   };
 
   if (loading) {
@@ -97,6 +108,9 @@ export function PhraseListPage() {
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
       />
+      {toastMessage && (
+        <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />
+      )}
     </div>
   );
 }

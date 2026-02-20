@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, TakeRepository } from '@lib/db';
 import { usePhrase } from '../hooks/usePhrase';
@@ -6,12 +6,14 @@ import { useAnalyzer } from '../hooks/useAnalyzer';
 import { AudioRecorder } from '../components/AudioRecorder';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { BackButton } from '../components/BackButton';
+import { Toast } from '../components/Toast';
 
 export function PracticeRecordPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { phrase, loading } = usePhrase(id!);
   const { state: analyzerState, error: analyzerError, analyze } = useAnalyzer();
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleRecordingComplete = useCallback(
     async (blob: Blob) => {
@@ -20,13 +22,16 @@ export function PracticeRecordPage() {
       try {
         const scores = await analyze(phrase.referenceAudioBlob, blob);
 
-        const db = await openDB();
-        const takeRepo = new TakeRepository(db);
-        const take = await takeRepo.create(id, blob, scores);
-
-        navigate(`/phrases/${id}/result/${take.id}`);
+        try {
+          const db = await openDB();
+          const takeRepo = new TakeRepository(db);
+          const take = await takeRepo.create(id, blob, scores);
+          navigate(`/phrases/${id}/result/${take.id}`);
+        } catch {
+          setSaveError('保存に失敗しました');
+        }
       } catch {
-        // エラーは useAnalyzer で管理
+        // 分析エラーは useAnalyzer で管理
       }
     },
     [id, phrase, analyze, navigate],
@@ -83,6 +88,9 @@ export function PracticeRecordPage() {
 
         <AudioRecorder autoStart onRecordingComplete={handleRecordingComplete} />
       </main>
+      {saveError && (
+        <Toast message={saveError} onDismiss={() => setSaveError(null)} />
+      )}
     </div>
   );
 }

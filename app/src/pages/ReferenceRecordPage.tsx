@@ -1,22 +1,28 @@
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, PhraseRepository } from '@lib/db';
 import { usePhrase } from '../hooks/usePhrase';
 import { AudioRecorder } from '../components/AudioRecorder';
 import { BackButton } from '../components/BackButton';
+import { Toast } from '../components/Toast';
 
 export function ReferenceRecordPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { phrase, loading } = usePhrase(id!);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleRecordingComplete = useCallback(
     async (blob: Blob) => {
       if (!id) return;
-      const db = await openDB();
-      const repo = new PhraseRepository(db);
-      await repo.updateReference(id, blob);
-      navigate(`/phrases/${id}`, { state: { fromRecording: true } });
+      try {
+        const db = await openDB();
+        const repo = new PhraseRepository(db);
+        await repo.updateReference(id, blob);
+        navigate(`/phrases/${id}`, { state: { fromRecording: true } });
+      } catch {
+        setSaveError('保存に失敗しました');
+      }
     },
     [id, navigate],
   );
@@ -41,6 +47,9 @@ export function ReferenceRecordPage() {
         </h2>
         <AudioRecorder autoStart onRecordingComplete={handleRecordingComplete} />
       </main>
+      {saveError && (
+        <Toast message={saveError} onDismiss={() => setSaveError(null)} />
+      )}
     </div>
   );
 }
