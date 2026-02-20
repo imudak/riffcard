@@ -1,3 +1,4 @@
+/** REQ-RC-PLAY-002: テイク再生 */
 import type { Take } from '@lib/db';
 import { AudioPlayer } from './AudioPlayer';
 

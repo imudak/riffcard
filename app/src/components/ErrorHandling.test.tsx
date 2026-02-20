@@ -1,3 +1,7 @@
+/**
+ * エラーハンドリングテスト
+ * REQ-RC-REC-002: マイク権限拒否, REQ-RC-NFR-004: ブラウザ互換性
+ */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';

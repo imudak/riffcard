@@ -1,3 +1,4 @@
+/** REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生, REQ-RC-PLAY-003: 再生エラー */
 import { useState, useRef, useEffect } from 'react';
 
 interface AudioPlayerProps {

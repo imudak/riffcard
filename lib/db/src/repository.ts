@@ -13,9 +13,11 @@ function generateUUID(): string {
   });
 }
 
+/** REQ-RC-DATA-002: IndexedDB CRUD操作 */
 export class PhraseRepository {
   constructor(private db: IDBPDatabase<RiffCardDB>) {}
 
+  /** REQ-RC-DATA-003, DJ-003: デフォルト名で即作成 */
   async create(): Promise<Phrase> {
     const title = await this.generateDefaultTitle();
     const now = new Date();
@@ -47,6 +49,7 @@ export class PhraseRepository {
     await this.db.put('phrases', phrase);
   }
 
+  /** REQ-RC-REC-006: お手本再録音 */
   async updateReference(id: string, blob: Blob): Promise<void> {
     const phrase = await this.db.get('phrases', id);
     if (!phrase) return;
@@ -55,6 +58,7 @@ export class PhraseRepository {
     await this.db.put('phrases', phrase);
   }
 
+  /** REQ-RC-DATA-005: カスケード削除 */
   async delete(id: string): Promise<void> {
     const tx = this.db.transaction(['phrases', 'takes'], 'readwrite');
     // カスケード削除: 配下の Take を全削除
@@ -74,9 +78,11 @@ export class PhraseRepository {
   }
 }
 
+/** REQ-RC-DATA-002: IndexedDB CRUD操作 */
 export class TakeRepository {
   constructor(private db: IDBPDatabase<RiffCardDB>) {}
 
+  /** REQ-RC-PITCH-003: totalScore自動計算 */
   async create(
     phraseId: string,
     audioBlob: Blob,

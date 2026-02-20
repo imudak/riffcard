@@ -1,3 +1,7 @@
+/**
+ * ルーティングテスト: 5画面の遷移確認
+ * REQ-RC-UX-001〜005, NFR-002
+ */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';

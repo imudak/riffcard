@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-PITCH-003: DTWアライメント（スコア計算の基盤）
+ * REQ-RC-PITCH-004: ±50cent判定のためのアライメント
+ */
 import { describe, it, expect } from 'vitest';
 import { alignByDTW } from '../src/dtw';
 

@@ -1,3 +1,8 @@
+/**
+ * 共通コンポーネントテスト
+ * REQ-RC-UX-001: 初回CTA, REQ-RC-UX-005: 空状態表示
+ * REQ-RC-DATA-005: 削除確認ダイアログ
+ */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';

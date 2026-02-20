@@ -1,3 +1,4 @@
+/** REQ-RC-PITCH-005: スコア表示（総合・ピッチ・リズム内訳 + 評価ラベル） */
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ScoreDisplay } from './ScoreDisplay';

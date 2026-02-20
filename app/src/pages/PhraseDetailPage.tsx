@@ -1,3 +1,9 @@
+/**
+ * S3: フレーズ詳細画面
+ * REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生, REQ-RC-PLAY-003: 再生エラー
+ * REQ-RC-UX-003: ワンタップ練習, REQ-RC-REC-006: お手本再録音
+ * DJ-002: 初回お手本自動再生, DJ-003: タイトル編集
+ */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { openDB, PhraseRepository } from '@lib/db';

@@ -1,3 +1,8 @@
+/**
+ * S4: 練習録音画面
+ * REQ-RC-REC-005: 練習録音→自動分析, REQ-RC-PITCH-006: オフライン分析
+ * REQ-RC-NFR-003: 5分録音対応
+ */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, TakeRepository } from '@lib/db';

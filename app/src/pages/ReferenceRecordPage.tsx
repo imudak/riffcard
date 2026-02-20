@@ -1,3 +1,8 @@
+/**
+ * S2: お手本録音画面
+ * REQ-RC-REC-003: 録音キャプチャ, REQ-RC-REC-004: お手本保存
+ * REQ-RC-DATA-004, DJ-003: 即録音開始, REQ-RC-UX-002: 初回録音完了→自動再生
+ */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, PhraseRepository } from '@lib/db';

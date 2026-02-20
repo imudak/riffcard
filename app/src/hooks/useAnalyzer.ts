@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-REC-005: 練習録音→自動分析
+ * REQ-RC-PITCH-006: オフライン音声分析
+ */
 import { useState, useCallback } from 'react';
 import { analyzeAudio, calcPitchScore, calcRhythmScore, calcTotalScore } from '@lib/audio';
 import type { Scores } from '@lib/audio';

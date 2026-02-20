@@ -1,3 +1,4 @@
+/** REQ-RC-PITCH-005: スコア表示（総合・ピッチ・リズム内訳 + 評価ラベル） */
 interface ScoreDisplayProps {
   totalScore: number;
   pitchScore: number;

@@ -1,3 +1,8 @@
+/**
+ * S5: スコア結果画面
+ * REQ-RC-PITCH-005: スコア表示, REQ-RC-UX-004: もう一度ボタン
+ * REQ-RC-PLAY-002: テイク再生
+ */
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTakes } from '../hooks/useTakes';
 import { ScoreDisplay } from '../components/ScoreDisplay';

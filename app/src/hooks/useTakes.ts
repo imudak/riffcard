@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Take } from '@lib/db';
 import { openDB, TakeRepository } from '@lib/db';
 
+/** REQ-RC-DATA-002: IndexedDBからTake一覧を取得 */
 export function useTakes(phraseId: string) {
   const [takes, setTakes] = useState<Take[]>([]);
   const [loading, setLoading] = useState(true);

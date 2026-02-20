@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-DATA-002: IndexedDB CRUD
+ * REQ-RC-PITCH-003: totalScore自動計算（pitchScore*0.7 + rhythmScore*0.3）
+ */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { openDB } from '../src/schema';
 import { TakeRepository } from '../src/repository';

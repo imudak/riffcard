@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-PITCH-001: ピッチ分析パラメータ（80-1000Hz範囲）
+ * REQ-RC-PITCH-002: MIDI変換（12*log2(freq/440)+69）
+ */
 import { describe, it, expect } from 'vitest';
 import { freq2midi } from '../src/analyzer';
 

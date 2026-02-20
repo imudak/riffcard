@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-PITCH-003: 総合スコア計算（pitchScore*0.7 + rhythmScore*0.3）
+ * REQ-RC-PITCH-004: ピッチ精度判定（±50cent）
+ */
 import { describe, it, expect } from 'vitest';
 import { calcPitchScore, calcRhythmScore, calcTotalScore } from '../src/scoring';
 

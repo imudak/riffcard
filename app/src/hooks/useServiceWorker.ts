@@ -1,3 +1,4 @@
+/** REQ-RC-PWA-003: Service Worker更新通知 */
 import { useState, useEffect, useCallback } from 'react';
 
 interface UseServiceWorkerResult {

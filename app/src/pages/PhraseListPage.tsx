@@ -1,3 +1,8 @@
+/**
+ * S1: フレーズ一覧（トップ画面）
+ * REQ-RC-UX-001: 初回CTA, REQ-RC-UX-003: ワンタップ練習, REQ-RC-UX-005: 空状態表示
+ * REQ-RC-DATA-003: Phrase即作成, REQ-RC-DATA-005: カスケード削除
+ */
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { openDB, PhraseRepository, TakeRepository } from '@lib/db';

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Phrase } from '@lib/db';
 import { openDB, PhraseRepository } from '@lib/db';
 
+/** REQ-RC-DATA-002: IndexedDBから単一Phraseを取得 */
 export function usePhrase(id: string) {
   const [phrase, setPhrase] = useState<Phrase | null>(null);
   const [loading, setLoading] = useState(true);

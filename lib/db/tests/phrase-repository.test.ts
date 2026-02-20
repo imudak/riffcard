@@ -1,3 +1,9 @@
+/**
+ * REQ-RC-DATA-002: IndexedDB CRUD
+ * REQ-RC-DATA-003, DJ-003: デフォルト名で即作成
+ * REQ-RC-DATA-005: カスケード削除
+ * REQ-RC-REC-006: お手本再録音（updateReference）
+ */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { openDB } from '../src/schema';
 import { PhraseRepository } from '../src/repository';

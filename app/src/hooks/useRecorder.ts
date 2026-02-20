@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-REC-001: マイク権限要求, REQ-RC-REC-002: 権限拒否エラー
+ * REQ-RC-REC-003: 録音キャプチャ制御
+ */
 import { useState, useRef, useCallback } from 'react';
 import { requestMicPermission, AudioRecorderController } from '@lib/audio';
 import type { MicPermissionError } from '@lib/audio';

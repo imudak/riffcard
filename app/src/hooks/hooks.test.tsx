@@ -1,3 +1,7 @@
+/**
+ * カスタムフックテスト
+ * REQ-RC-DATA-002: IndexedDBからのデータ取得
+ */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { openDB, PhraseRepository, TakeRepository } from '@lib/db';

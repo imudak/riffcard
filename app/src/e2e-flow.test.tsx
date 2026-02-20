@@ -1,3 +1,11 @@
+/**
+ * E2Eフロー統合テスト
+ * REQ-RC-UX-001: 初回CTA, REQ-RC-UX-005: 空状態表示
+ * REQ-RC-DATA-003: Phrase即作成, REQ-RC-DATA-005: カスケード削除
+ * REQ-RC-UX-003: ワンタップ練習, REQ-RC-UX-004: もう一度ボタン
+ * REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生
+ * REQ-RC-PITCH-005: スコア表示, DJ-003: タイトル編集
+ */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';

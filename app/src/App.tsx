@@ -1,3 +1,4 @@
+/** REQ-RC-PWA-003: SW更新通知トースト */
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PhraseListPage } from './pages/PhraseListPage';
 import { ReferenceRecordPage } from './pages/ReferenceRecordPage';

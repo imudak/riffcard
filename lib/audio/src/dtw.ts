@@ -1,4 +1,5 @@
 /**
+ * REQ-RC-PITCH-003, REQ-RC-PITCH-004
  * ADR-004: Dynamic Time Warping
  * O(n²) の標準的な DTW 実装。〜100フレーム程度で十分な性能。
  */

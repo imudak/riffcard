@@ -1,3 +1,8 @@
+/**
+ * S1フレーズ一覧テスト
+ * REQ-RC-UX-001: 初回CTA, REQ-RC-UX-005: 空状態表示
+ * REQ-RC-DATA-003: Phrase即作成, REQ-RC-UX-003: ワンタップ練習
+ */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';

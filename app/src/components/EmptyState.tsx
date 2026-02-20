@@ -1,3 +1,4 @@
+/** REQ-RC-UX-001: 初回CTA, REQ-RC-UX-005: 空状態表示 */
 interface EmptyStateProps {
   icon?: string;
   message: string;

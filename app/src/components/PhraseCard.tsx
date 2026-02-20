@@ -1,3 +1,4 @@
+/** REQ-RC-UX-003: ワンタップ練習開始 */
 import { useNavigate } from 'react-router-dom';
 
 interface PhraseCardProps {

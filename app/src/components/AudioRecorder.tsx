@@ -1,3 +1,7 @@
+/**
+ * REQ-RC-REC-002: マイク権限拒否ガイド, REQ-RC-REC-003: 録音中波形表示
+ * REQ-RC-NFR-004: MediaRecorder非対応ブラウザ検出
+ */
 import { useEffect } from 'react';
 import { useRecorder } from '../hooks/useRecorder';
 import { WaveformVisualizer } from './WaveformVisualizer';
