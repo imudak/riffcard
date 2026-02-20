@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import { PhraseListPage } from './pages/PhraseListPage';
@@ -7,6 +7,10 @@ import { ReferenceRecordPage } from './pages/ReferenceRecordPage';
 import { PhraseDetailPage } from './pages/PhraseDetailPage';
 import { PracticeRecordPage } from './pages/PracticeRecordPage';
 import { ScoreResultPage } from './pages/ScoreResultPage';
+
+beforeEach(() => {
+  indexedDB = new IDBFactory();
+});
 
 function renderWithRouter(initialPath: string) {
   return render(
@@ -23,28 +27,38 @@ function renderWithRouter(initialPath: string) {
 }
 
 describe('ルーティング', () => {
-  it('/ → PhraseListPage', () => {
+  it('/ → PhraseListPage (RiffCard ヘッダー表示)', async () => {
     renderWithRouter('/');
-    expect(screen.getByText('PhraseListPage')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('RiffCard')).toBeInTheDocument();
+    });
   });
 
-  it('/phrases/:id/reference → ReferenceRecordPage', () => {
+  it('/phrases/:id/reference → ReferenceRecordPage (お手本を録音 表示)', async () => {
     renderWithRouter('/phrases/abc/reference');
-    expect(screen.getByText('ReferenceRecordPage')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('お手本を録音')).toBeInTheDocument();
+    });
   });
 
-  it('/phrases/:id → PhraseDetailPage', () => {
+  it('/phrases/:id → PhraseDetailPage (フレーズが見つかりません 表示)', async () => {
     renderWithRouter('/phrases/abc');
-    expect(screen.getByText('PhraseDetailPage')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('フレーズが見つかりません')).toBeInTheDocument();
+    });
   });
 
-  it('/phrases/:id/practice → PracticeRecordPage', () => {
+  it('/phrases/:id/practice → PracticeRecordPage (練習中 表示)', async () => {
     renderWithRouter('/phrases/abc/practice');
-    expect(screen.getByText('PracticeRecordPage')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('練習中')).toBeInTheDocument();
+    });
   });
 
-  it('/phrases/:id/result/:takeId → ScoreResultPage', () => {
+  it('/phrases/:id/result/:takeId → ScoreResultPage (結果 表示)', async () => {
     renderWithRouter('/phrases/abc/result/take1');
-    expect(screen.getByText('ScoreResultPage')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('結果が見つかりません')).toBeInTheDocument();
+    });
   });
 });
