@@ -144,4 +144,38 @@ describe('TakeRepository', () => {
       expect(best).toBeNull();
     });
   });
+
+  /** REQ-RC-DATA-006: Takeの個別削除 */
+  describe('delete()', () => {
+    it('指定 ID の Take を削除する', async () => {
+      const blob = new Blob(['audio'], { type: 'audio/webm' });
+      const take = await repo.create(phraseId, blob, {
+        pitchScore: 80,
+        rhythmScore: 70,
+        totalScore: 0,
+      });
+
+      await repo.delete(take.id);
+
+      const found = await repo.getById(take.id);
+      expect(found).toBeUndefined();
+    });
+
+    it('削除後は getByPhraseId に含まれない', async () => {
+      const blob = new Blob(['audio'], { type: 'audio/webm' });
+      const scores = { pitchScore: 80, rhythmScore: 70, totalScore: 0 };
+      const t1 = await repo.create(phraseId, blob, scores);
+      const t2 = await repo.create(phraseId, blob, scores);
+
+      await repo.delete(t1.id);
+
+      const takes = await repo.getByPhraseId(phraseId);
+      expect(takes).toHaveLength(1);
+      expect(takes[0].id).toBe(t2.id);
+    });
+
+    it('存在しない ID を削除しても例外が発生しない', async () => {
+      await expect(repo.delete('nonexistent-id')).resolves.toBeUndefined();
+    });
+  });
 });

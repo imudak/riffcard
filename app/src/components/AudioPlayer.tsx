@@ -1,4 +1,7 @@
-/** REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生, REQ-RC-PLAY-003: 再生エラー */
+/**
+ * REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生, REQ-RC-PLAY-003: 再生エラー
+ * REQ-RC-PLAY-004: お手本再生中は録音停止 (onPlayingChange, stopSignal)
+ */
 import { useState, useRef, useEffect } from 'react';
 
 interface AudioPlayerProps {
@@ -6,9 +9,20 @@ interface AudioPlayerProps {
   label?: string;
   autoPlay?: boolean;
   onError?: () => void;
+  /** 再生状態変化コールバック REQ-RC-PLAY-004 */
+  onPlayingChange?: (playing: boolean) => void;
+  /** インクリメントで停止指示 REQ-RC-REC-007 */
+  stopSignal?: number;
 }
 
-export function AudioPlayer({ blob, label = '再生', autoPlay = false, onError }: AudioPlayerProps) {
+export function AudioPlayer({
+  blob,
+  label = '再生',
+  autoPlay = false,
+  onError,
+  onPlayingChange,
+  stopSignal,
+}: AudioPlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -35,6 +49,14 @@ export function AudioPlayer({ blob, label = '再生', autoPlay = false, onError 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, blob]);
 
+  /** REQ-RC-REC-007: 録音開始時に停止指示を受けたら停止 */
+  useEffect(() => {
+    if (stopSignal && stopSignal > 0) {
+      stopAudio();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stopSignal]);
+
   const playAudio = () => {
     if (!urlRef.current) return;
     setError(false);
@@ -42,14 +64,21 @@ export function AudioPlayer({ blob, label = '再生', autoPlay = false, onError 
     const audio = new Audio(urlRef.current);
     audioRef.current = audio;
 
-    audio.onended = () => setPlaying(false);
+    audio.onended = () => {
+      setPlaying(false);
+      onPlayingChange?.(false);
+    };
     audio.onerror = () => {
       setPlaying(false);
       setError(true);
+      onPlayingChange?.(false);
       onError?.();
     };
 
-    audio.play().then(() => setPlaying(true)).catch(() => {
+    audio.play().then(() => {
+      setPlaying(true);
+      onPlayingChange?.(true);
+    }).catch(() => {
       setError(true);
       onError?.();
     });
@@ -60,6 +89,7 @@ export function AudioPlayer({ blob, label = '再生', autoPlay = false, onError 
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setPlaying(false);
+      onPlayingChange?.(false);
     }
   };
 

@@ -119,4 +119,9 @@ export class TakeRepository {
     if (takes.length === 0) return null;
     return Math.max(...takes.map((t) => t.totalScore));
   }
+
+  /** REQ-RC-DATA-006, REQ-RC-DATA-007: Take個別削除 */
+  async delete(id: string): Promise<void> {
+    await this.db.delete('takes', id);
+  }
 }

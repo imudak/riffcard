@@ -3,10 +3,11 @@
  * REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生, REQ-RC-PLAY-003: 再生エラー
  * REQ-RC-UX-003: ワンタップ練習, REQ-RC-REC-006: お手本再録音
  * DJ-002: 初回お手本自動再生, DJ-003: タイトル編集
+ * REQ-RC-DATA-007: フレーズ詳細からのTake削除
  */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { openDB, PhraseRepository } from '@lib/db';
+import { openDB, PhraseRepository, TakeRepository } from '@lib/db';
 import { usePhrase } from '../hooks/usePhrase';
 import { useTakes } from '../hooks/useTakes';
 import { AudioPlayer } from '../components/AudioPlayer';
@@ -20,7 +21,7 @@ export function PhraseDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { phrase, loading, refresh: refreshPhrase } = usePhrase(id!);
-  const { takes } = useTakes(id!);
+  const { takes, refresh: refreshTakes } = useTakes(id!);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -40,6 +41,18 @@ export function PhraseDetailPage() {
       setToastMessage('保存に失敗しました');
     }
   }, [id, editTitle, refreshPhrase]);
+
+  /** REQ-RC-DATA-007: Take削除 */
+  const handleDeleteTake = useCallback(async (takeId: string) => {
+    try {
+      const db = await openDB();
+      const repo = new TakeRepository(db);
+      await repo.delete(takeId);
+      await refreshTakes();
+    } catch {
+      setToastMessage('削除に失敗しました');
+    }
+  }, [refreshTakes]);
 
   if (loading) {
     return (
@@ -144,7 +157,7 @@ export function PhraseDetailPage() {
           ) : (
             <div className="flex flex-col gap-2">
               {takes.map((take, i) => (
-                <TakeItem key={take.id} take={take} index={takes.length - i} />
+                <TakeItem key={take.id} take={take} index={takes.length - i} onDelete={handleDeleteTake} />
               ))}
             </div>
           )}

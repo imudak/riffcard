@@ -2,15 +2,20 @@
  * S4: 練習録音画面
  * REQ-RC-REC-005: 練習録音→自動分析, REQ-RC-PITCH-006: オフライン分析
  * REQ-RC-NFR-003: 5分録音対応
+ * REQ-RC-PLAY-004: お手本再生中は録音停止
+ * REQ-RC-REC-007: 録音開始時はお手本停止
+ * REQ-RC-REC-008: 練習テイク自動分割フロー
  */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, TakeRepository } from '@lib/db';
+import type { Take } from '@lib/db';
 import { usePhrase } from '../hooks/usePhrase';
 import { useAnalyzer } from '../hooks/useAnalyzer';
 import { AudioRecorder } from '../components/AudioRecorder';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { BackButton } from '../components/BackButton';
+import { ScoreDisplay } from '../components/ScoreDisplay';
 import { Toast } from '../components/Toast';
 
 export function PracticeRecordPage() {
@@ -20,6 +25,33 @@ export function PracticeRecordPage() {
   const { state: analyzerState, error: analyzerError, analyze } = useAnalyzer();
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  /** REQ-RC-PLAY-004: お手本再生中フラグ */
+  const [isReferenceAudioPlaying, setIsReferenceAudioPlaying] = useState(false);
+  /** REQ-RC-REC-007: AudioPlayer停止シグナル */
+  const [playerStopSignal, setPlayerStopSignal] = useState(0);
+  /** REQ-RC-PLAY-004: AudioRecorder停止シグナル */
+  const [recorderStopSignal, setRecorderStopSignal] = useState(0);
+
+  /** REQ-RC-REC-008: 直近テイクのインライン表示 */
+  const [lastTake, setLastTake] = useState<Take | null>(null);
+  const [showInlineResult, setShowInlineResult] = useState(false);
+  /** REQ-RC-REC-008: AudioRecorder再マウント用キー */
+  const [recordingKey, setRecordingKey] = useState(0);
+
+  /** REQ-RC-PLAY-004: お手本再生状態変化 → 録音停止指示 */
+  const handlePlayerPlayingChange = useCallback((playing: boolean) => {
+    setIsReferenceAudioPlaying(playing);
+    if (playing) {
+      setRecorderStopSignal((s) => s + 1);
+    }
+  }, []);
+
+  /** REQ-RC-REC-007: 録音開始時 → お手本停止指示 */
+  const handleRecordingStart = useCallback(() => {
+    setPlayerStopSignal((s) => s + 1);
+  }, []);
+
+  /** REQ-RC-REC-008: 録音完了 → 分析 → インライン結果表示 */
   const handleRecordingComplete = useCallback(
     async (blob: Blob) => {
       if (!id || !phrase?.referenceAudioBlob) return;
@@ -31,7 +63,8 @@ export function PracticeRecordPage() {
           const db = await openDB();
           const takeRepo = new TakeRepository(db);
           const take = await takeRepo.create(id, blob, scores);
-          navigate(`/phrases/${id}/result/${take.id}`);
+          setLastTake(take);
+          setShowInlineResult(true);
         } catch {
           setSaveError('保存に失敗しました');
         }
@@ -39,8 +72,22 @@ export function PracticeRecordPage() {
         // 分析エラーは useAnalyzer で管理
       }
     },
-    [id, phrase, analyze, navigate],
+    [id, phrase, analyze],
   );
+
+  /** REQ-RC-REC-008: もう一度 → 録音再開 */
+  const handleRetry = useCallback(() => {
+    setShowInlineResult(false);
+    setLastTake(null);
+    setRecordingKey((k) => k + 1);
+  }, []);
+
+  /** REQ-RC-REC-008: 完了 → スコア結果画面へ */
+  const handleFinish = useCallback(() => {
+    if (lastTake) {
+      navigate(`/phrases/${id}/result/${lastTake.id}`);
+    }
+  }, [id, lastTake, navigate]);
 
   if (loading) {
     return (
@@ -65,7 +112,10 @@ export function PracticeRecordPage() {
         <p className="text-red-500">分析に失敗しました</p>
         <p className="text-sm text-gray-500">{analyzerError?.message}</p>
         <button
-          onClick={() => navigate(`/phrases/${id}/practice`)}
+          onClick={() => {
+            setShowInlineResult(false);
+            setRecordingKey((k) => k + 1);
+          }}
           className="rounded-lg bg-rose-500 px-4 py-2 text-white hover:bg-rose-600"
         >
           もう一度録音する
@@ -87,11 +137,48 @@ export function PracticeRecordPage() {
 
         {phrase?.referenceAudioBlob && (
           <div className="mb-6 flex justify-center">
-            <AudioPlayer blob={phrase.referenceAudioBlob} label="お手本を聴く" />
+            <AudioPlayer
+              blob={phrase.referenceAudioBlob}
+              label="お手本を聴く"
+              onPlayingChange={handlePlayerPlayingChange}
+              stopSignal={playerStopSignal}
+            />
           </div>
         )}
 
-        <AudioRecorder autoStart onRecordingComplete={handleRecordingComplete} />
+        {/* REQ-RC-REC-008: インライン結果 or 録音UI */}
+        {showInlineResult && lastTake ? (
+          <div className="flex flex-col items-center gap-4 p-4">
+            <ScoreDisplay
+              totalScore={lastTake.totalScore}
+              pitchScore={lastTake.pitchScore}
+              rhythmScore={lastTake.rhythmScore}
+            />
+            <div className="flex w-full flex-col gap-3 pt-2">
+              <button
+                onClick={handleRetry}
+                className="w-full rounded-lg bg-rose-500 py-3 text-base font-semibold text-white hover:bg-rose-600"
+              >
+                もう一度
+              </button>
+              <button
+                onClick={handleFinish}
+                className="w-full rounded-lg border border-gray-300 py-3 text-gray-600 hover:bg-gray-100"
+              >
+                完了（詳細を見る）
+              </button>
+            </div>
+          </div>
+        ) : (
+          <AudioRecorder
+            key={recordingKey}
+            autoStart
+            disabled={isReferenceAudioPlaying}
+            stopSignal={recorderStopSignal}
+            onRecordingStart={handleRecordingStart}
+            onRecordingComplete={handleRecordingComplete}
+          />
+        )}
       </main>
       {saveError && (
         <Toast message={saveError} onDismiss={() => setSaveError(null)} />

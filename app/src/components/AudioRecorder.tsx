@@ -1,14 +1,22 @@
 /**
  * REQ-RC-REC-002: マイク権限拒否ガイド, REQ-RC-REC-003: 録音中波形表示
  * REQ-RC-NFR-004: MediaRecorder非対応ブラウザ検出
+ * REQ-RC-PLAY-004: お手本再生中は録音停止 (disabled, stopSignal)
+ * REQ-RC-REC-007: 録音開始時コールバック (onRecordingStart)
  */
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRecorder } from '../hooks/useRecorder';
 import { WaveformVisualizer } from './WaveformVisualizer';
 
 interface AudioRecorderProps {
   autoStart?: boolean;
+  /** お手本再生中に録音を無効化 REQ-RC-PLAY-004 */
+  disabled?: boolean;
+  /** インクリメントで録音停止指示 REQ-RC-PLAY-004 */
+  stopSignal?: number;
   onRecordingComplete: (blob: Blob) => void;
+  /** 録音開始時コールバック REQ-RC-REC-007 */
+  onRecordingStart?: () => void;
 }
 
 function formatTime(seconds: number): string {
@@ -17,20 +25,44 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
 
-export function AudioRecorder({ autoStart = false, onRecordingComplete }: AudioRecorderProps) {
+export function AudioRecorder({
+  autoStart = false,
+  disabled = false,
+  stopSignal,
+  onRecordingComplete,
+  onRecordingStart,
+}: AudioRecorderProps) {
   const { state, audioBlob, error, elapsedTime, startRecording, stopRecording, getMediaStream } =
     useRecorder();
+  const prevStateRef = useRef<string>('idle');
 
   const isMediaRecorderSupported =
     typeof window !== 'undefined' &&
     'MediaRecorder' in window &&
     'mediaDevices' in navigator;
 
+  /** REQ-RC-PLAY-004: disabled=true のとき autoStart しない */
   useEffect(() => {
-    if (autoStart && state === 'idle' && isMediaRecorderSupported) {
+    if (autoStart && !disabled && state === 'idle' && isMediaRecorderSupported) {
       startRecording();
     }
-  }, [autoStart, state, startRecording, isMediaRecorderSupported]);
+  }, [autoStart, disabled, state, startRecording, isMediaRecorderSupported]);
+
+  /** REQ-RC-PLAY-004: stopSignal 変化時に録音停止 */
+  useEffect(() => {
+    if (stopSignal && stopSignal > 0 && state === 'recording') {
+      stopRecording();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stopSignal]);
+
+  /** REQ-RC-REC-007: 録音開始時コールバック */
+  useEffect(() => {
+    if (state === 'recording' && prevStateRef.current !== 'recording') {
+      onRecordingStart?.();
+    }
+    prevStateRef.current = state;
+  }, [state, onRecordingStart]);
 
   useEffect(() => {
     if (state === 'stopped' && audioBlob) {
@@ -45,6 +77,18 @@ export function AudioRecorder({ autoStart = false, onRecordingComplete }: AudioR
         <div className="text-sm text-gray-600 text-center">
           <p>Chrome、Firefox、Edge の最新版をお使いください。</p>
           <p className="mt-1">Google Chrome を推奨します。</p>
+        </div>
+      </div>
+    );
+  }
+
+  /** REQ-RC-PLAY-004: お手本再生中は待機表示 */
+  if (disabled && state !== 'recording') {
+    return (
+      <div className="flex flex-col items-center gap-4 p-6">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-gray-300" />
+          <span className="text-sm text-gray-400">お手本再生中...</span>
         </div>
       </div>
     );
