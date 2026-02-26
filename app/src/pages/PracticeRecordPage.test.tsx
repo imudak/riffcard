@@ -23,8 +23,8 @@ vi.mock('../components/AudioRecorder', () => ({
     onRecordingComplete: (blob: Blob) => void;
     disabled?: boolean;
     autoStart?: boolean;
-    stopSignal?: number;
     onRecordingStart?: () => void;
+    onStreamChange?: (stream: MediaStream | null) => void;
   }) => {
     capturedOnRecordingComplete = onRecordingComplete;
     if (disabled) {
@@ -32,6 +32,11 @@ vi.mock('../components/AudioRecorder', () => ({
     }
     return <div data-testid="audio-recorder">AudioRecorder</div>;
   },
+}));
+
+// RealtimePitchOverlay モック
+vi.mock('../components/RealtimePitchOverlay', () => ({
+  RealtimePitchOverlay: () => <div data-testid="realtime-pitch-overlay" />,
 }));
 
 // AudioPlayer モック
@@ -311,8 +316,20 @@ describe('PracticeRecordPage - REQ-RC-REC-008: 練習テイク自動分割フロ
     it('お手本再生開始時に AudioRecorder が disabled 表示になる', () => {
       renderPage();
       // AudioPlayer の onClick で onPlayingChange(true) をトリガー
+      // → recordingKey がインクリメントされ AudioRecorder がリマウント
+      // → disabled={true} のため "お手本再生中..." 表示
       fireEvent.click(screen.getByTestId('audio-player'));
       expect(screen.getByTestId('audio-recorder-disabled')).toBeInTheDocument();
+    });
+
+    it('お手本再生開始時に録音が破棄されて結果画面に遷移しない（バグ修正確認）', () => {
+      renderPage();
+      // お手本再生 → onRecordingComplete は呼ばれないはず（recordingKeyリセットのため）
+      fireEvent.click(screen.getByTestId('audio-player'));
+      // インライン結果（ScoreDisplay）が表示されないことを確認
+      expect(screen.queryByTestId('score-display')).not.toBeInTheDocument();
+      // 結果画面への遷移もない
+      expect(screen.queryByTestId('score-result-page')).not.toBeInTheDocument();
     });
   });
 });

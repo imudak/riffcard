@@ -19,6 +19,7 @@ import { AudioPlayer } from '../components/AudioPlayer';
 import { BackButton } from '../components/BackButton';
 import { ScoreDisplay } from '../components/ScoreDisplay';
 import { Toast } from '../components/Toast';
+import { RealtimePitchOverlay } from '../components/RealtimePitchOverlay';
 
 export function PracticeRecordPage() {
   const { id } = useParams<{ id: string }>();
@@ -31,8 +32,8 @@ export function PracticeRecordPage() {
   const [isReferenceAudioPlaying, setIsReferenceAudioPlaying] = useState(false);
   /** REQ-RC-REC-007: AudioPlayer停止シグナル */
   const [playerStopSignal, setPlayerStopSignal] = useState(0);
-  /** REQ-RC-PLAY-004: AudioRecorder停止シグナル */
-  const [recorderStopSignal, setRecorderStopSignal] = useState(0);
+  /** UX-PITCH-OVERLAY-001: 録音ストリーム（リアルタイムピッチ表示用） */
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   /** REQ-RC-REC-008: 直近テイクのインライン表示 */
   const [lastTake, setLastTake] = useState<Take | null>(null);
@@ -85,11 +86,14 @@ export function PracticeRecordPage() {
     };
   }, [phrase?.referenceAudioBlob]);
 
-  /** REQ-RC-PLAY-004: お手本再生状態変化 → 録音停止指示 */
+  /** REQ-RC-PLAY-004: お手本再生状態変化
+   * 再生開始時: 録音中のテイクを破棄してRecorderをリマウント（遷移バグ防止）
+   * 再生終了時: isReferenceAudioPlayingがfalseになりautoStartで録音再開 */
   const handlePlayerPlayingChange = useCallback((playing: boolean) => {
     setIsReferenceAudioPlaying(playing);
     if (playing) {
-      setRecorderStopSignal((s) => s + 1);
+      // 録音を破棄してAudioRecorderをリマウント（onRecordingCompleteを呼ばせない）
+      setRecordingKey((k) => k + 1);
     }
   }, []);
 
@@ -219,14 +223,26 @@ export function PracticeRecordPage() {
             </div>
           </div>
         ) : (
-          <AudioRecorder
-            key={recordingKey}
-            autoStart
-            disabled={isReferenceAudioPlaying}
-            stopSignal={recorderStopSignal}
-            onRecordingStart={handleRecordingStart}
-            onRecordingComplete={handleRecordingComplete}
-          />
+          <>
+            {/* UX-PITCH-OVERLAY-001: リアルタイムピッチ比較グラフ + 進行バー */}
+            {phrase?.referenceAudioBlob && (
+              <div className="mb-4">
+                <RealtimePitchOverlay
+                  referenceBlob={phrase.referenceAudioBlob}
+                  stream={stream}
+                  onsetTime={referenceOnsetTime}
+                />
+              </div>
+            )}
+            <AudioRecorder
+              key={recordingKey}
+              autoStart
+              disabled={isReferenceAudioPlaying}
+              onRecordingStart={handleRecordingStart}
+              onRecordingComplete={handleRecordingComplete}
+              onStreamChange={setStream}
+            />
+          </>
         )}
       </main>
       {saveError && (
