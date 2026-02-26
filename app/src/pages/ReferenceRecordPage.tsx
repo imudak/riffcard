@@ -2,12 +2,14 @@
  * S2: お手本録音画面
  * REQ-RC-REC-003: 録音キャプチャ, REQ-RC-REC-004: お手本保存
  * REQ-RC-DATA-004, DJ-003: 即録音開始, REQ-RC-UX-002: 初回録音完了→自動再生
+ * REQ-RC-UX-006: リアルタイムピッチ表示
  */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, PhraseRepository } from '@lib/db';
 import { usePhrase } from '../hooks/usePhrase';
 import { AudioRecorder } from '../components/AudioRecorder';
+import { RealTimePitchDisplay } from '../components/RealTimePitchDisplay';
 import { BackButton } from '../components/BackButton';
 import { Toast } from '../components/Toast';
 
@@ -16,6 +18,8 @@ export function ReferenceRecordPage() {
   const navigate = useNavigate();
   const { phrase, loading } = usePhrase(id!);
   const [saveError, setSaveError] = useState<string | null>(null);
+  /** REQ-RC-UX-006: 録音中のストリーム */
+  const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
 
   const handleRecordingComplete = useCallback(
     async (blob: Blob) => {
@@ -50,7 +54,17 @@ export function ReferenceRecordPage() {
         <h2 className="mb-6 text-center text-lg font-medium text-gray-800">
           {phrase?.title ?? ''}
         </h2>
-        <AudioRecorder autoStart onRecordingComplete={handleRecordingComplete} />
+        {/* REQ-RC-UX-006: 録音中のみリアルタイムピッチ表示 */}
+        {recordingStream && (
+          <div className="mb-4">
+            <RealTimePitchDisplay stream={recordingStream} />
+          </div>
+        )}
+        <AudioRecorder
+          autoStart
+          onRecordingComplete={handleRecordingComplete}
+          onStreamChange={setRecordingStream}
+        />
       </main>
       {saveError && (
         <Toast message={saveError} onDismiss={() => setSaveError(null)} />

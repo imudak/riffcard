@@ -4,6 +4,8 @@
  * REQ-RC-UX-003: ワンタップ練習, REQ-RC-REC-006: お手本再録音
  * DJ-002: 初回お手本自動再生, DJ-003: タイトル編集
  * REQ-RC-DATA-007: フレーズ詳細からのTake削除
+ * REQ-RC-PLAY-005: お手本ループ再生, REQ-RC-PLAY-006: お手本再生速度調整
+ * REQ-RC-UX-007: お手本音声波形表示
  */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -11,6 +13,8 @@ import { openDB, PhraseRepository, TakeRepository } from '@lib/db';
 import { usePhrase } from '../hooks/usePhrase';
 import { useTakes } from '../hooks/useTakes';
 import { AudioPlayer } from '../components/AudioPlayer';
+import { LoopSpeedControls } from '../components/LoopSpeedControls';
+import { WaveformDisplay } from '../components/WaveformDisplay';
 import { TakeItem } from '../components/TakeItem';
 import { BackButton } from '../components/BackButton';
 import { Toast } from '../components/Toast';
@@ -26,6 +30,10 @@ export function PhraseDetailPage() {
   const [editTitle, setEditTitle] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showRerecordConfirm, setShowRerecordConfirm] = useState(false);
+  /** REQ-RC-PLAY-005: ループ再生 */
+  const [loop, setLoop] = useState(false);
+  /** REQ-RC-PLAY-006: 再生速度 */
+  const [playbackRate, setPlaybackRate] = useState(1.0);
 
   const fromRecording = (location.state as { fromRecording?: boolean } | null)?.fromRecording;
 
@@ -119,11 +127,17 @@ export function PhraseDetailPage() {
         {/* お手本セクション */}
         <section className="mb-6">
           <h3 className="mb-2 text-sm font-medium text-gray-500">お手本</h3>
-          <div className="flex items-center gap-3">
+          {/* REQ-RC-UX-007: 音声波形表示 */}
+          {phrase.referenceAudioBlob && (
+            <WaveformDisplay audioBlob={phrase.referenceAudioBlob} height={60} />
+          )}
+          <div className="mt-2 flex items-center gap-3">
             <AudioPlayer
               blob={phrase.referenceAudioBlob}
               label="再生"
               autoPlay={!!fromRecording}
+              loop={loop}
+              playbackRate={playbackRate}
             />
             <button
               onClick={() => phrase.referenceAudioBlob ? setShowRerecordConfirm(true) : navigate(`/phrases/${id}/reference`)}
@@ -132,6 +146,17 @@ export function PhraseDetailPage() {
               再録音
             </button>
           </div>
+          {/* REQ-RC-PLAY-005, REQ-RC-PLAY-006: ループ・速度コントロール */}
+          {phrase.referenceAudioBlob && (
+            <div className="mt-2">
+              <LoopSpeedControls
+                loop={loop}
+                onLoopChange={setLoop}
+                playbackRate={playbackRate}
+                onPlaybackRateChange={setPlaybackRate}
+              />
+            </div>
+          )}
           {!phrase.referenceAudioBlob && (
             <p className="mt-2 text-sm text-gray-400">お手本が未録音です</p>
           )}

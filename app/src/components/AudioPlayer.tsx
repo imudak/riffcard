@@ -1,6 +1,8 @@
 /**
  * REQ-RC-PLAY-001: お手本再生, REQ-RC-PLAY-002: テイク再生, REQ-RC-PLAY-003: 再生エラー
  * REQ-RC-PLAY-004: お手本再生中は録音停止 (onPlayingChange, stopSignal)
+ * REQ-RC-PLAY-005: お手本ループ再生 (loop)
+ * REQ-RC-PLAY-006: お手本再生速度調整 (playbackRate)
  */
 import { useState, useRef, useEffect } from 'react';
 
@@ -13,6 +15,10 @@ interface AudioPlayerProps {
   onPlayingChange?: (playing: boolean) => void;
   /** インクリメントで停止指示 REQ-RC-REC-007 */
   stopSignal?: number;
+  /** ループ再生 REQ-RC-PLAY-005 */
+  loop?: boolean;
+  /** 再生速度 (0.5 | 0.75 | 1.0) REQ-RC-PLAY-006 */
+  playbackRate?: number;
 }
 
 export function AudioPlayer({
@@ -22,6 +28,8 @@ export function AudioPlayer({
   onError,
   onPlayingChange,
   stopSignal,
+  loop,
+  playbackRate,
 }: AudioPlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState(false);
@@ -57,11 +65,27 @@ export function AudioPlayer({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stopSignal]);
 
+  /** REQ-RC-PLAY-005: loop 変更時に反映 */
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.loop = loop ?? false;
+    }
+  }, [loop]);
+
+  /** REQ-RC-PLAY-006: playbackRate 変更時に反映 */
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate ?? 1.0;
+    }
+  }, [playbackRate]);
+
   const playAudio = () => {
     if (!urlRef.current) return;
     setError(false);
 
     const audio = new Audio(urlRef.current);
+    audio.loop = loop ?? false;
+    audio.playbackRate = playbackRate ?? 1.0;
     audioRef.current = audio;
 
     audio.onended = () => {

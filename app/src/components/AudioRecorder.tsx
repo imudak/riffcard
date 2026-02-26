@@ -3,6 +3,7 @@
  * REQ-RC-NFR-004: MediaRecorder非対応ブラウザ検出
  * REQ-RC-PLAY-004: お手本再生中は録音停止 (disabled, stopSignal)
  * REQ-RC-REC-007: 録音開始時コールバック (onRecordingStart)
+ * REQ-RC-UX-006: ストリーム公開コールバック (onStreamChange)
  */
 import { useEffect, useRef } from 'react';
 import { useRecorder } from '../hooks/useRecorder';
@@ -17,6 +18,8 @@ interface AudioRecorderProps {
   onRecordingComplete: (blob: Blob) => void;
   /** 録音開始時コールバック REQ-RC-REC-007 */
   onRecordingStart?: () => void;
+  /** 録音ストリーム変化コールバック REQ-RC-UX-006 */
+  onStreamChange?: (stream: MediaStream | null) => void;
 }
 
 function formatTime(seconds: number): string {
@@ -31,8 +34,9 @@ export function AudioRecorder({
   stopSignal,
   onRecordingComplete,
   onRecordingStart,
+  onStreamChange,
 }: AudioRecorderProps) {
-  const { state, audioBlob, error, elapsedTime, startRecording, stopRecording, getMediaStream } =
+  const { state, audioBlob, error, elapsedTime, stream, startRecording, stopRecording, getMediaStream } =
     useRecorder();
   const prevStateRef = useRef<string>('idle');
 
@@ -63,6 +67,11 @@ export function AudioRecorder({
     }
     prevStateRef.current = state;
   }, [state, onRecordingStart]);
+
+  /** REQ-RC-UX-006: ストリーム変化をコールバックで通知 */
+  useEffect(() => {
+    onStreamChange?.(stream);
+  }, [stream, onStreamChange]);
 
   useEffect(() => {
     if (state === 'stopped' && audioBlob) {

@@ -13,6 +13,8 @@ export function useRecorder() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  /** REQ-RC-UX-006: 録音中のストリーム（RealTimePitchDisplay用） */
+  const [stream, setStream] = useState<MediaStream | null>(null);
   const controllerRef = useRef<AudioRecorderController | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
@@ -23,8 +25,9 @@ export function useRecorder() {
       setError(null);
       setAudioBlob(null);
 
-      const stream = await requestMicPermission();
-      const controller = new AudioRecorderController(stream);
+      const mediaStream = await requestMicPermission();
+      setStream(mediaStream);
+      const controller = new AudioRecorderController(mediaStream);
       controllerRef.current = controller;
 
       controller.start();
@@ -59,6 +62,7 @@ export function useRecorder() {
     } finally {
       controllerRef.current.dispose();
       controllerRef.current = null;
+      setStream(null);
     }
   }, []);
 
@@ -71,6 +75,7 @@ export function useRecorder() {
     audioBlob,
     error,
     elapsedTime,
+    stream,
     startRecording,
     stopRecording,
     getMediaStream,
