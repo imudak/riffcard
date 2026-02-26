@@ -91,6 +91,16 @@ export function AudioPlayer({
 
   const playAudio = () => {
     if (!urlRef.current) return;
+
+    // 二重再生防止: 前のインスタンスを停止・イベント解除
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.ontimeupdate = null;
+      audioRef.current.onloadedmetadata = null;
+    }
+
     setError(false);
     setCurrentTime(0);
     setDuration(0);

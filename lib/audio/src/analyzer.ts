@@ -5,6 +5,8 @@ const MIN_FREQ = 80;
 const MAX_FREQ = 1000;
 const FFT_SIZE = 4096;
 const HOP_RATIO = 0.5; // 50% overlap
+/** 無音フレーム除外用 RMS エネルギー閾値（onset検出と同形式：平均二乗エネルギー） */
+const RMS_ENERGY_THRESHOLD = 0.001;
 
 /**
  * REQ-RC-PITCH-002: MIDI 変換
@@ -77,12 +79,25 @@ export async function analyzeAudio(audioBlob: Blob): Promise<AnalysisResult> {
 
     for (let offset = 0; offset + FFT_SIZE <= samples.length; offset += hopSize) {
       const frame = samples.slice(offset, offset + FFT_SIZE);
+      const time = offset / sampleRate;
+
+      // 無音フレームのノイズ除外: 平均二乗エネルギーが閾値以下はピッチなし
+      let energy = 0;
+      for (let i = 0; i < frame.length; i++) {
+        energy += frame[i] * frame[i];
+      }
+      const mse = energy / frame.length;
+
+      if (mse < RMS_ENERGY_THRESHOLD) {
+        pitchFrames.push({ time, frequency: 0, midi: 0, clarity: 0 });
+        continue;
+      }
+
       const windowed = applyHanningWindow(frame);
 
       const detector = PitchDetector.forFloat32Array(FFT_SIZE);
       const [frequency, clarity] = detector.findPitch(windowed, sampleRate);
 
-      const time = offset / sampleRate;
       const midi = freq2midi(frequency);
 
       pitchFrames.push({
