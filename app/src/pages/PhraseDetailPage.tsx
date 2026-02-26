@@ -6,6 +6,7 @@
  * REQ-RC-DATA-007: フレーズ詳細からのTake削除
  * REQ-RC-PLAY-005: お手本ループ再生, REQ-RC-PLAY-006: お手本再生速度調整
  * REQ-RC-UX-007: お手本音声波形表示
+ * UX-WAVE-001: 波形をピッチ輪郭に統一
  */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -14,7 +15,7 @@ import { usePhrase } from '../hooks/usePhrase';
 import { useTakes } from '../hooks/useTakes';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { LoopSpeedControls } from '../components/LoopSpeedControls';
-import { WaveformDisplay } from '../components/WaveformDisplay';
+import { PitchContourDisplay } from '../components/PitchContourDisplay';
 import { TakeItem } from '../components/TakeItem';
 import { BackButton } from '../components/BackButton';
 import { Toast } from '../components/Toast';
@@ -81,7 +82,7 @@ export function PhraseDetailPage() {
   return (
     <div className="mx-auto min-h-screen max-w-lg bg-gray-50">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
-        <BackButton />
+        <BackButton to="/" />
         {!editing && (
           <button
             onClick={() => {
@@ -127,9 +128,9 @@ export function PhraseDetailPage() {
         {/* お手本セクション */}
         <section className="mb-6">
           <h3 className="mb-2 text-sm font-medium text-gray-500">お手本</h3>
-          {/* REQ-RC-UX-007: 音声波形表示 */}
+          {/* UX-WAVE-001: ピッチ輪郭表示（振幅→ピッチに統一） */}
           {phrase.referenceAudioBlob && (
-            <WaveformDisplay audioBlob={phrase.referenceAudioBlob} height={60} />
+            <PitchContourDisplay audioBlob={phrase.referenceAudioBlob} height={60} />
           )}
           <div className="mt-2 flex items-center gap-3">
             <AudioPlayer

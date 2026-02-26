@@ -5,8 +5,10 @@
  * REQ-RC-PLAY-004: お手本再生中は録音停止
  * REQ-RC-REC-007: 録音開始時はお手本停止
  * REQ-RC-REC-008: 練習テイク自動分割フロー
+ * UX-NAV-001: 明示的な Back ナビゲーション
+ * UX-TIMING-001: お手本歌い始めタイミング表示
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { openDB, TakeRepository } from '@lib/db';
 import type { Take } from '@lib/db';
@@ -37,6 +39,51 @@ export function PracticeRecordPage() {
   const [showInlineResult, setShowInlineResult] = useState(false);
   /** REQ-RC-REC-008: AudioRecorder再マウント用キー */
   const [recordingKey, setRecordingKey] = useState(0);
+  /** UX-TIMING-001: お手本の歌い始め時刻（秒） */
+  const [referenceOnsetTime, setReferenceOnsetTime] = useState<number | undefined>(undefined);
+
+  /** UX-TIMING-001: お手本音声のエネルギーベースのonset検出 */
+  useEffect(() => {
+    const blob = phrase?.referenceAudioBlob;
+    if (!blob) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const arrayBuffer = await blob.arrayBuffer();
+        if (cancelled) return;
+        const offlineCtx = new OfflineAudioContext(1, 1, 44100);
+        const audioBuffer = await offlineCtx.decodeAudioData(arrayBuffer);
+        if (cancelled) return;
+
+        const samples = audioBuffer.getChannelData(0);
+        const sampleRate = audioBuffer.sampleRate;
+        const frameSize = 512;
+        const threshold = 0.01;
+
+        for (let i = 0; i + frameSize <= samples.length; i += frameSize) {
+          let rms = 0;
+          for (let j = 0; j < frameSize; j++) {
+            rms += (samples[i + j] ?? 0) * (samples[i + j] ?? 0);
+          }
+          rms = Math.sqrt(rms / frameSize);
+          if (rms > threshold) {
+            const onset = Math.max(0, i / sampleRate - 0.05);
+            if (!cancelled) setReferenceOnsetTime(onset);
+            return;
+          }
+        }
+        if (!cancelled) setReferenceOnsetTime(0);
+      } catch {
+        // 失敗時は onsetTime 未設定のまま（進行バーのみ表示）
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [phrase?.referenceAudioBlob]);
 
   /** REQ-RC-PLAY-004: お手本再生状態変化 → 録音停止指示 */
   const handlePlayerPlayingChange = useCallback((playing: boolean) => {
@@ -127,7 +174,7 @@ export function PracticeRecordPage() {
   return (
     <div className="mx-auto min-h-screen max-w-lg bg-gray-50">
       <header className="sticky top-0 z-10 flex items-center gap-3 bg-white px-4 py-3 shadow-sm">
-        <BackButton label="練習中" />
+        <BackButton label="フレーズに戻る" to={`/phrases/${id}`} />
       </header>
 
       <main className="p-4">
@@ -136,12 +183,14 @@ export function PracticeRecordPage() {
         </h2>
 
         {phrase?.referenceAudioBlob && (
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 w-full">
             <AudioPlayer
               blob={phrase.referenceAudioBlob}
               label="お手本を聴く"
               onPlayingChange={handlePlayerPlayingChange}
               stopSignal={playerStopSignal}
+              showProgress
+              onsetTime={referenceOnsetTime}
             />
           </div>
         )}

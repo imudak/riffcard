@@ -135,7 +135,7 @@ describe('E2E フロー統合テスト', () => {
       await waitFor(() => {
         expect(screen.getByText('もう一度')).toBeInTheDocument();
       });
-      expect(screen.getByText('フレーズに戻る')).toBeInTheDocument();
+      expect(screen.getAllByText('フレーズに戻る').length).toBeGreaterThan(0);
     });
   });
 

@@ -2,10 +2,11 @@
  * 共通コンポーネントテスト
  * REQ-RC-UX-001: 初回CTA, REQ-RC-UX-005: 空状態表示
  * REQ-RC-DATA-005: 削除確認ダイアログ
+ * UX-NAV-001: 画面遷移整理 - BackButton to prop
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { BackButton } from './BackButton';
 import { ConfirmDialog } from './ConfirmDialog';
 import { EmptyState } from './EmptyState';
@@ -28,6 +29,22 @@ describe('BackButton', () => {
       </MemoryRouter>,
     );
     expect(screen.getByText('戻る')).toBeInTheDocument();
+  });
+
+  it('to prop 指定時に明示的なパスへ遷移する (UX-NAV-001)', () => {
+    render(
+      <MemoryRouter initialEntries={['/practice']}>
+        <Routes>
+          <Route
+            path="/practice"
+            element={<BackButton label="フレーズに戻る" to="/phrases/1" />}
+          />
+          <Route path="/phrases/1" element={<div data-testid="target-page">detail</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('フレーズに戻る'));
+    expect(screen.getByTestId('target-page')).toBeInTheDocument();
   });
 });
 

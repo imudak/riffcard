@@ -52,10 +52,11 @@ describe('ルーティング', () => {
     });
   });
 
-  it('/phrases/:id/practice → PracticeRecordPage (練習中 表示)', async () => {
+  it('/phrases/:id/practice → PracticeRecordPage (フレーズに戻る BackButton 表示)', async () => {
     renderWithRouter('/phrases/abc/practice');
     await waitFor(() => {
-      expect(screen.getByText('練習中')).toBeInTheDocument();
+      // UX-NAV-001: BackButton label 変更 (練習中 → フレーズに戻る)
+      expect(screen.getByText('フレーズに戻る')).toBeInTheDocument();
     });
   });
 

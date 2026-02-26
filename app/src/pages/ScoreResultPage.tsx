@@ -4,6 +4,8 @@
  * REQ-RC-PLAY-002: テイク再生
  * REQ-RC-PITCH-007: ピッチ差分グラフ表示
  * REQ-RC-DATA-006: Takeのundo削除
+ * UX-NAV-001: 明示的な Back ナビゲーション
+ * UX-WAVE-001: お手本・録音ピッチ輪郭比較
  */
 import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -15,6 +17,7 @@ import { AudioPlayer } from '../components/AudioPlayer';
 import { BackButton } from '../components/BackButton';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PitchDeviationChart } from '../components/PitchDeviationChart';
+import { PitchContourDisplay } from '../components/PitchContourDisplay';
 
 export function ScoreResultPage() {
   const { id, takeId } = useParams<{ id: string; takeId: string }>();
@@ -59,7 +62,7 @@ export function ScoreResultPage() {
   return (
     <div className="mx-auto min-h-screen max-w-lg bg-gray-50">
       <header className="sticky top-0 z-10 flex items-center gap-3 bg-white px-4 py-3 shadow-sm">
-        <BackButton label="結果" />
+        <BackButton label="フレーズに戻る" to={`/phrases/${id}`} />
       </header>
 
       <main className="flex flex-col items-center gap-6 p-6">
@@ -68,6 +71,27 @@ export function ScoreResultPage() {
           pitchScore={take.pitchScore}
           rhythmScore={take.rhythmScore}
         />
+
+        {/* UX-WAVE-001: お手本・録音ピッチ輪郭比較 */}
+        {phrase?.referenceAudioBlob && (
+          <div className="w-full rounded-lg bg-white p-4 shadow-sm">
+            <h4 className="mb-3 text-sm font-medium text-gray-600">ピッチ比較</h4>
+            <div className="flex flex-col gap-3">
+              <PitchContourDisplay
+                audioBlob={phrase.referenceAudioBlob}
+                label="お手本"
+                color="#6366f1"
+                height={50}
+              />
+              <PitchContourDisplay
+                audioBlob={take.audioBlob}
+                label="録音"
+                color="#f43f5e"
+                height={50}
+              />
+            </div>
+          </div>
+        )}
 
         {/* REQ-RC-PITCH-007: ピッチ差分グラフ */}
         {phrase?.referenceAudioBlob && (
